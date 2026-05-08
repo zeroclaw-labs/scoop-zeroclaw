@@ -1,12 +1,12 @@
 {
-  "version": "0.6.9",
+  "version": "0.7.5",
   "description": "Zero overhead. Zero compromise. 100% Rust. The fastest, smallest AI assistant.",
   "homepage": "https://github.com/zeroclaw-labs/zeroclaw",
   "license": "MIT|Apache-2.0",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/zeroclaw-labs/zeroclaw/releases/download/v0.6.9/zeroclaw-x86_64-pc-windows-msvc.zip",
-      "hash": "72fae18ef388be39b454bc1e417d8e9107c40277509d37dff66b937411aa1f2a",
+      "url": "https://github.com/zeroclaw-labs/zeroclaw/releases/download/v0.7.5/zeroclaw-x86_64-pc-windows-msvc.zip",
+      "hash": "e8ff73a35ad550d5389d47db3eabc571142c4cc307afb09b2d4ee29d342ff5b8",
       "bin": "zeroclaw.exe"
     }
   },
