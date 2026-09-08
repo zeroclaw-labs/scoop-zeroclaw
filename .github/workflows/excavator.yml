@@ -1,0 +1,47 @@
+name: Excavator
+
+# Keeps bucket/zeroclaw.json current without a cross-repo credential.
+#
+# The manifest already declares `checkver` and `autoupdate`; excavator is what
+# consumes them. It polls the ZeroClaw repo for a new stable release, recomputes
+# `version`, `url`, and `hash` from the release's SHA256SUMS, and commits the
+# result here using this repository's own GITHUB_TOKEN.
+#
+# This is the self-healing layer. zeroclaw-labs/zeroclaw also pushes the
+# manifest on release via pub-scoop.yml, which is atomic with the release but
+# depends on an account-bound SCOOP_BUCKET_TOKEN that has expired and has lost
+# write on this repo more than once, silently leaving the bucket stale. When
+# that push fails, excavator republishes on its own schedule with no human and
+# no credential to rotate.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 4 hours, matching the upstream bucket template.
+    - cron: "20 */4 * * *"
+
+# Excavator commits to this repository. Note that the repository-level
+# "Workflow permissions" setting caps GITHUB_TOKEN, so this block alone is not
+# enough: that setting must be "Read and write permissions" or the push fails
+# with a 403.
+permissions:
+  contents: write
+
+concurrency:
+  group: excavator
+  cancel-in-progress: false
+
+jobs:
+  excavate:
+    name: Excavate
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Excavate
+        # Pinned rather than the template's @main: this action has write access
+        # to the bucket, so it should not float.
+        uses: ScoopInstaller/GithubActions@a709983c0692a8a853c288cf5e9bf14658107936 # main @ 2026-08-03
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SKIP_UPDATED: 1
